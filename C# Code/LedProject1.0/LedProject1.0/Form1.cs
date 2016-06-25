@@ -49,14 +49,7 @@ namespace LedProject1._0
             g.Clear(Color.FromArgb(255, 255, 255));
         }
 
-        private Pixel[] pixelPositionOfFrame(int position)
-        {
-            //First pixel[0] is uppleft pixel, pixel[1] is downright pixel
-            Pixel[] pixels = new Pixel[2];
-            pixels[0] = new Pixel(0, 0);
-            pixels[1] = new Pixel(1, 1);
-            return pixels;
-        }
+        
         private void drawReferanceFrame()
         {
             
@@ -219,7 +212,14 @@ namespace LedProject1._0
                 frame.setPixel(temp, i);
             updateScreen();
         }
-
+        private Pixel[] pixelPositionOfFrame(int position)
+        {
+            //First pixel[0] is uppleft pixel, pixel[1] is downright pixel
+            Pixel[] pixels = new Pixel[2];
+            pixels[0] = new Pixel(0, 0);
+            pixels[1] = new Pixel(1, 1);
+            return pixels;
+        }
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
         {
             //Implement here
