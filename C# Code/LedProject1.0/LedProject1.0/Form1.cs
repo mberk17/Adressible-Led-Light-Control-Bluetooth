@@ -27,6 +27,7 @@ namespace LedProject1._0
         public const int leftPixels = 7, rightPixels = 7, topPixels = 12;
         public const int numberOfPixels = leftPixels + rightPixels + topPixels;
 
+
         
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -48,42 +49,28 @@ namespace LedProject1._0
         {
             g.Clear(Color.FromArgb(255, 255, 255));
         }
-
-        
         private void drawReferanceFrame()
         {
-            
             int scrWidth = pictureBox.Width, scrHeight = pictureBox.Height;
             Pen linePen = new Pen(Color.Black, 2);
-            Point linePoint1 = new Point((scrWidth / topPixels), 0);
-            Point linePoint2 = new Point((scrWidth / topPixels), scrHeight);
-            g.DrawLine(linePen, linePoint1, linePoint2);
-            linePoint1 = new Point(0, (scrHeight / leftPixels));
-            linePoint2 = new Point(scrWidth, (scrHeight / leftPixels));
-            g.DrawLine(linePen, linePoint1, linePoint2);
-            linePoint1 = new Point((scrWidth / topPixels) * (topPixels - 1), 0);
-            linePoint2 = new Point((scrWidth / topPixels) * (topPixels - 1), scrHeight);
-            g.DrawLine(linePen, linePoint1, linePoint2);
-
-            for (int i = 1; i < leftPixels; i++)
+            Point Point1 = new Point((scrWidth / topPixels), 0);
+            Size size = new Size(scrWidth / topPixels, scrHeight / (leftPixels + 1));
+            for (int i = 1; i <= leftPixels; i++)
             {
-                linePoint1 = new Point(0, i * (scrHeight / leftPixels));
-                linePoint2 = new Point((scrWidth / topPixels), i * (scrHeight / leftPixels));
-                g.DrawLine(linePen, linePoint1, linePoint2);
+                Point1 = new Point(0, i * (scrHeight / (leftPixels + 1)));
+                g.DrawRectangle(linePen, new Rectangle(Point1, size));
             }
 
-            for (int i = 1; i < rightPixels; i++)
+            for (int i = 1; i <= rightPixels; i++)
             {
-                linePoint1 = new Point((scrWidth / topPixels) * (topPixels - 1), i * (scrHeight / leftPixels));
-                linePoint2 = new Point(scrWidth, i * (scrHeight / leftPixels));
-                g.DrawLine(linePen, linePoint1, linePoint2);
+                Point1 = new Point((topPixels - 1) * (scrWidth/topPixels), i * (scrHeight / (rightPixels + 1)));
+                g.DrawRectangle(linePen, new Rectangle(Point1, size));
             }
 
-            for (int i = 1; i < topPixels; i++)
+            for (int i = 0; i < topPixels; i++)
             {
-                linePoint1 = new Point((scrWidth / topPixels) * i, 0);
-                linePoint2 = new Point((scrWidth / topPixels) * i, (scrHeight / rightPixels));
-                g.DrawLine(linePen, linePoint1, linePoint2);
+                Point1 = new Point(i * (scrWidth/topPixels), 0);
+                g.DrawRectangle(linePen, new Rectangle(Point1, size));
             }
         }
         private void drawScreen()
@@ -215,9 +202,31 @@ namespace LedProject1._0
         private Pixel[] pixelPositionOfFrame(int position)
         {
             //First pixel[0] is uppleft pixel, pixel[1] is downright pixel
+            int scrWidth = pictureBox.Width, scrHeight = pictureBox.Height;
             Pixel[] pixels = new Pixel[2];
             pixels[0] = new Pixel(0, 0);
             pixels[1] = new Pixel(1, 1);
+            if (position <= leftPixels)
+            {
+                pixels[0].X = 0;
+                pixels[0].Y = (leftPixels - position + 1) * (scrHeight / (leftPixels + 1));
+                pixels[1].X = scrWidth / topPixels;
+                pixels[1].Y = (leftPixels - position + 1) * (scrHeight / (leftPixels + 1)) + (scrHeight / (leftPixels + 1));
+            }
+            else if (position > leftPixels && position <= leftPixels + topPixels)
+            {
+                pixels[0].X = (position - leftPixels - 1) * (scrWidth / (topPixels));
+                pixels[0].Y = 0;
+                pixels[1].X = (position - leftPixels - 1) * (scrWidth / (topPixels)) + scrWidth / topPixels;
+                pixels[1].Y = (scrHeight / (leftPixels + 1));
+            }
+            else if (position > leftPixels + topPixels && position <= leftPixels + topPixels + rightPixels)
+            {
+                pixels[0].X = (scrWidth / topPixels) * (topPixels - 1);
+                pixels[0].Y = (-rightPixels - topPixels + position) * (scrHeight / (rightPixels + 1));
+                pixels[1].X = (scrWidth / topPixels) * (topPixels - 1) + scrWidth / topPixels;
+                pixels[1].Y = (-rightPixels - topPixels + position) * (scrHeight / (rightPixels + 1)) + (scrHeight / (rightPixels + 1));
+            }
             return pixels;
         }
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
