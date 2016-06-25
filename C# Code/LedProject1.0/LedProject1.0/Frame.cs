@@ -1,36 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace LedProject1._0
 {
     public class Frame
     {
-        private int[,] colorArray; 
+        private Color[] colorArray; 
         public Frame(int numPixels)
         {
-            colorArray = new int[numPixels,3];
+            colorArray = new Color[numPixels];
         }
 
-        public int[] getPixel(int position)
+        public Color getPixel(int position)
         {
-            int[] output = new int[3];
-            for (int i = 0; i < 3; i++)
-                output[i] = colorArray[position,i];
-            return output;
+            return colorArray[position];
         }
-        public void setPixel(int position, int[] color)
+        public void setPixel(int R, int G, int B, int position)
         {
-            for(int i = 0; i < 3; i++)
-                colorArray[position, i] = color[i];
+            Color pixel = Color.FromArgb(R, G, B);
+            colorArray[position] = pixel;
+        }
+        public void setPixel(Color pixel, int position)
+        {
+            colorArray[position] = pixel;
         }
 
-        public void setPixel(int[,] colorArray)
+        public void setPixel(Color[] colorArray)
         {
             this.colorArray = colorArray;
         }
 
+    }
+    public class Pixel
+    {
+        public byte X, Y;
+        public Pixel(byte X,byte Y)
+        {
+            this.X = X;
+            this.Y = Y;
+        }
+        public Pixel(int X, int Y)
+        {
+            this.X = (byte)X;
+            this.Y = (byte)Y;
+
+        }
     }
 }

@@ -38,13 +38,6 @@ namespace LedProject1._0
             g = Graphics.FromImage(b);
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             drawScreen();
-            int[] pixel = new int[3];
-            pixel[0] = 65;
-            pixel[1] = 66;
-            pixel[2] = 67;
-            frame.setPixel(8, pixel);
-            frame.setPixel(13, pixel);
-            frame.setPixel(18, pixel);
         }
         void refr()
         {
@@ -55,10 +48,19 @@ namespace LedProject1._0
         {
             g.Clear(Color.FromArgb(255, 255, 255));
         }
+
+        private Pixel[] pixelPositionOfFrame(int position)
+        {
+            //First pixel[0] is uppleft pixel, pixel[1] is downright pixel
+            Pixel[] pixels = new Pixel[2];
+            pixels[0] = new Pixel(0, 0);
+            pixels[1] = new Pixel(1, 1);
+            return pixels;
+        }
         private void drawReferanceFrame()
         {
+            
             int scrWidth = pictureBox.Width, scrHeight = pictureBox.Height;
-            g.Clear(Color.FromArgb(255, 255, 255));
             Pen linePen = new Pen(Color.Black, 2);
             Point linePoint1 = new Point((scrWidth / topPixels), 0);
             Point linePoint2 = new Point((scrWidth / topPixels), scrHeight);
@@ -97,6 +99,11 @@ namespace LedProject1._0
             drawReferanceFrame();
             refr();
         }
+
+        private void updateScreen()
+        {
+            refr();
+        }
         
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -132,10 +139,7 @@ namespace LedProject1._0
             StringBuilder output = new StringBuilder("");
             
             for (int i = 0; i < numberOfPixels; i++)
-                for (int j = 0; j < 3; j++)
-                {
-                    output.Append(rgbMessageConverter(frame.getPixel(i)[0], frame.getPixel(i)[1], frame.getPixel(i)[2]));
-                }
+                output.Append(rgbMessageConverter(frame.getPixel(i)));
             String final = output.ToString();
             port1.Write(final);
             return true;
@@ -146,11 +150,7 @@ namespace LedProject1._0
             //port1.WriteLine(rgbConverter());
         }
         Timer timer;
-        private void allLed_Click(object sender, EventArgs e)
-        {
-            pictureBox.BackColor = Color.FromArgb(scrollR.Value,scrollG.Value,scrollB.Value);
-            
-        }
+        
         private void continiousButton_Click(object sender, EventArgs e)
         {
             if (continiousButton.Text == "Continious Led Control")
@@ -172,8 +172,9 @@ namespace LedProject1._0
             sendData();
             timer.Start();
         }
-        private string rgbMessageConverter(int R, int G, int B)
+        private string rgbMessageConverter(Color pixel)
         {
+            int R = pixel.R, G = pixel.G, B = pixel.B;
             G = (G * 6) / 8;
             B = B / 4;
             char r1, g1, b1;
@@ -184,26 +185,47 @@ namespace LedProject1._0
             return message;
         }
 
-        private void topButton_Click(object sender, EventArgs e)
+        private Color getScrollColor()
         {
-            char output = (char) 65;
-            String text = output + "" + output + "" + output;
-            port1.Write(text);
+            return Color.FromArgb(scrollR.Value, scrollG.Value, scrollB.Value);
         }
-
+        private void allLed_Click(object sender, EventArgs e)
+        {
+            Color temp = getScrollColor();
+            for (int i = 0; i < numberOfPixels; i++)
+                frame.setPixel(temp, i);
+            updateScreen();
+        }
         private void leftButton_Click(object sender, EventArgs e)
         {
-
+            Color temp = getScrollColor();
+            for (int i = 0; i < leftPixels; i++)
+                frame.setPixel(temp, i);
+            updateScreen();
+        }
+        private void topButton_Click(object sender, EventArgs e)
+        {
+            Color temp = getScrollColor();
+            int limit = leftPixels + topPixels;
+            for (int i = leftPixels; i < limit; i++)
+                frame.setPixel(temp, i);
+            updateScreen();
         }
 
         private void rightButton_Click(object sender, EventArgs e)
         {
-
+            Color temp = getScrollColor();
+            for (int i = leftPixels + topPixels + 1; i < numberOfPixels; i++)
+                frame.setPixel(temp, i);
+            updateScreen();
         }
 
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
         {
+            //Implement here
 
+            //
+            updateScreen();//refresh screen after click
         }
     }
 }
