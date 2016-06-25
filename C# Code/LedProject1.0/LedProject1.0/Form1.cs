@@ -182,7 +182,7 @@ namespace LedProject1._0
             Pen linePen = new Pen(Color.Black, 2);
             Point Point1 = new Point((scrWidth / topPixels), 0);
             Size size = new Size(scrWidth / topPixels, scrHeight / (leftPixels + 1));
-            for (int i = 0; i <= numberOfPixels; i++)
+            for (int i = 1; i <= numberOfPixels; i++)
             {
                 Pixel[] pixels = pixelPositionOfFrame(i);
                 Pixel dif = new Pixel(pixels[1].X - pixels[0].X, pixels[1].Y - pixels[0].Y);
@@ -222,7 +222,13 @@ namespace LedProject1._0
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
         {
             //Implement here
-
+            for (int i = 1; i <= numberOfPixels; i++)
+            {
+                Pixel[] which = new Pixel[2];
+                which = pixelPositionOfFrame(i);
+                if (e.X >= which[0].X && e.X <= which[1].X && e.Y >= which[0].Y && e.Y <= which[1].Y)
+                    currentPixel = i;
+            }
             //
             updateScreen();//refresh screen after click
         }
