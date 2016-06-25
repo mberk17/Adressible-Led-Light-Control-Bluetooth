@@ -49,30 +49,7 @@ namespace LedProject1._0
         {
             g.Clear(Color.FromArgb(255, 255, 255));
         }
-        private void drawReferanceFrame()
-        {
-            int scrWidth = pictureBox.Width, scrHeight = pictureBox.Height;
-            Pen linePen = new Pen(Color.Black, 2);
-            Point Point1 = new Point((scrWidth / topPixels), 0);
-            Size size = new Size(scrWidth / topPixels, scrHeight / (leftPixels + 1));
-            for (int i = 1; i <= leftPixels; i++)
-            {
-                Point1 = new Point(0, i * (scrHeight / (leftPixels + 1)));
-                g.DrawRectangle(linePen, new Rectangle(Point1, size));
-            }
-
-            for (int i = 1; i <= rightPixels; i++)
-            {
-                Point1 = new Point((topPixels - 1) * (scrWidth/topPixels), i * (scrHeight / (rightPixels + 1)));
-                g.DrawRectangle(linePen, new Rectangle(Point1, size));
-            }
-
-            for (int i = 0; i < topPixels; i++)
-            {
-                Point1 = new Point(i * (scrWidth/topPixels), 0);
-                g.DrawRectangle(linePen, new Rectangle(Point1, size));
-            }
-        }
+        
         private void drawScreen()
         {
             clearScreen();
@@ -199,13 +176,26 @@ namespace LedProject1._0
                 frame.setPixel(temp, i);
             updateScreen();
         }
+        private void drawReferanceFrame()
+        {
+            int scrWidth = pictureBox.Width, scrHeight = pictureBox.Height;
+            Pen linePen = new Pen(Color.Black, 2);
+            Point Point1 = new Point((scrWidth / topPixels), 0);
+            Size size = new Size(scrWidth / topPixels, scrHeight / (leftPixels + 1));
+            for (int i = 0; i <= numberOfPixels; i++)
+            {
+                Pixel[] pixels = pixelPositionOfFrame(i);
+                Pixel dif = new Pixel(pixels[1].X - pixels[0].X, pixels[1].Y - pixels[0].Y);
+                g.DrawRectangle(linePen,pixels[0].X,pixels[0].Y, dif.X,dif.Y);
+            }
+        }
         private Pixel[] pixelPositionOfFrame(int position)
         {
             //First pixel[0] is uppleft pixel, pixel[1] is downright pixel
             int scrWidth = pictureBox.Width, scrHeight = pictureBox.Height;
             Pixel[] pixels = new Pixel[2];
-            pixels[0] = new Pixel(0, 0);
-            pixels[1] = new Pixel(1, 1);
+            pixels[0] = new Pixel();//Bunu da yapman lazim
+            pixels[1] = new Pixel();
             if (position <= leftPixels)
             {
                 pixels[0].X = 0;

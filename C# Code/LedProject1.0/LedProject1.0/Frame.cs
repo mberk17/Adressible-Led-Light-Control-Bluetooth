@@ -47,5 +47,6 @@ namespace LedProject1._0
             this.Y = Y;
 
         }
+        public Pixel() { }
     }
 }
