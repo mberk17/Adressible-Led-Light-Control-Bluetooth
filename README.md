@@ -2,7 +2,7 @@
 Led Light Control Over Bluetooth
 
 This project made for ambilight like lighting for pc monitors over bluetooth.
-Latest version can only control whole led strip at once for now.
+Latest version can control any led on led strip with desired color. And it stable
 
 #Requirements
 1-Arduino
