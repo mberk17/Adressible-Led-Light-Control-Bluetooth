@@ -63,6 +63,7 @@
             this.scrollR.Name = "scrollR";
             this.scrollR.Size = new System.Drawing.Size(144, 29);
             this.scrollR.TabIndex = 1;
+            this.scrollR.ValueChanged += new System.EventHandler(this.scroll_ValueChanged);
             // 
             // scrollG
             // 
@@ -71,6 +72,7 @@
             this.scrollG.Name = "scrollG";
             this.scrollG.Size = new System.Drawing.Size(144, 29);
             this.scrollG.TabIndex = 1;
+            this.scrollG.ValueChanged += new System.EventHandler(this.scroll_ValueChanged);
             // 
             // scrollB
             // 
@@ -79,6 +81,7 @@
             this.scrollB.Name = "scrollB";
             this.scrollB.Size = new System.Drawing.Size(144, 29);
             this.scrollB.TabIndex = 1;
+            this.scrollB.ValueChanged += new System.EventHandler(this.scroll_ValueChanged);
             // 
             // topButton
             // 

@@ -38,15 +38,4 @@ namespace LedProject1._0
         }
 
     }
-    public class Pixel
-    {
-        public int X, Y;
-        public Pixel(int X, int Y)
-        {
-            this.X = X;
-            this.Y = Y;
-
-        }
-        public Pixel() { }
-    }
 }
