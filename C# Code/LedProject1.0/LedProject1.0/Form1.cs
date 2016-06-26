@@ -213,7 +213,7 @@ namespace LedProject1._0
             for (int i = 0; i < numberOfPixels; i++)
             {
                 Rectangle rect = pixelPositionOfFrame(i);
-                g.DrawRectangle(linePen, rect.X, rect.Y, rect.Width, rect.Height);
+                g.DrawRectangle(linePen, rect);
             }
         }
         private void drawColors(int position)
@@ -282,6 +282,16 @@ namespace LedProject1._0
                     frame.setPixel(getScrollColor(), i);
             }
             drawScreen();
+        }
+        private Color screenColorValue(Point pixel)
+        {
+            Color output = Color.FromArgb(100, 100, 100);
+            return output;
+        }
+        private Boolean updateColorArrayFromScreen()
+        {
+
+            return true;
         }
     }
 }
