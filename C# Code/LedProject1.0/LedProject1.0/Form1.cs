@@ -295,6 +295,22 @@ namespace LedProject1._0
             updateColorArrayFromScreen();
         }
 
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                ShowInTaskbar = false;
+                notifyIcon1.Visible = true;
+            }
+        }
+
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ShowInTaskbar = true;
+            notifyIcon1.Visible = false;
+            WindowState = FormWindowState.Normal;
+        }
+
         private Color getColorAt(Point pixel)
         {
             IntPtr desk = GetDesktopWindow();
@@ -333,5 +349,6 @@ namespace LedProject1._0
             drawScreen();
             return true;
         }
+        
     }
 }
