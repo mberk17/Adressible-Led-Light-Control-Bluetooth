@@ -99,13 +99,9 @@ namespace LedProject1._0
             SerialPort sp = (SerialPort)source;
             int temp = (char)sp.ReadChar();
             if (temp == numberOfMessage)
-            {
-                Console.WriteLine(numberOfMessage+"Message Finished: " + temp);
                 messageOnProgress = false;
-            }
             else
             {
-                Console.WriteLine("Sending Message number: " + (temp + 1));
                 StringBuilder output = new StringBuilder("");
                 for (int i = temp * bytesPerMessage / 3; i < numberOfPixels && i < (temp+1) * bytesPerMessage / 3; i++)
                     output.Append(rgbMessageConverter(frame.getPixel(i)));
@@ -276,7 +272,6 @@ namespace LedProject1._0
         }
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
         {
-            //Implement here
             for (int i = 0; i < numberOfPixels; i++)
             {
                 Rectangle which = pixelPositionOfFrame(i);
@@ -305,6 +300,7 @@ namespace LedProject1._0
         private Boolean updateColorArrayFromScreen()
         {
 
+            drawScreen();
             return true;
         }
     }
