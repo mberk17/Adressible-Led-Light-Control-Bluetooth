@@ -289,6 +289,12 @@ namespace LedProject1._0
         public static extern uint GetPixel(IntPtr dc, int x, int y);
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int ReleaseDC(IntPtr window, IntPtr dc);
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            updateColorArrayFromScreen();
+        }
+
         private Color getColorAt(Point pixel)
         {
             IntPtr desk = GetDesktopWindow();
@@ -299,7 +305,31 @@ namespace LedProject1._0
         }
         private Boolean updateColorArrayFromScreen()
         {
+            Rectangle resolution = Screen.PrimaryScreen.Bounds; //taking screen resolution
+            int screenHeight = resolution.Height;
+            int screenWidth = resolution.Width;
+            Color tempColor;
+            Point tempPoint;
+            for (int i = 1; i <= leftPixels; i++)
+            {
+                tempPoint = new Point( screenWidth / 200, (leftPixels - i + 1) * (screenHeight / (leftPixels + 1)));
+                tempColor = getColorAt(tempPoint);
+                frame.setPixel(tempColor, i - 1);
+            }
 
+            for (int i = 1; i <= rightPixels; i++)
+            {
+                tempPoint = new Point(screenWidth - (screenWidth / 200), (rightPixels - i + 1) * (screenHeight / (rightPixels + 1)));
+                tempColor = getColorAt(tempPoint);
+                frame.setPixel(tempColor, leftPixels + topPixels + i - 1);
+            }
+
+            for (int i = 1; i <= topPixels; i++)
+            {
+                tempPoint = new Point(i * (screenWidth / (topPixels + 1)), screenHeight / 100);
+                tempColor = getColorAt(tempPoint);
+                frame.setPixel(tempColor, leftPixels + i - 1);
+            }
             drawScreen();
             return true;
         }
