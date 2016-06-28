@@ -7,4 +7,4 @@ Latest version can control any led on led strip with desired color. And it is fi
 #Requirements
 1-Arduino
 2-Any Bluetooth module
-3-Adressable Led Strip
+3-Adressible RGB Led Strip
