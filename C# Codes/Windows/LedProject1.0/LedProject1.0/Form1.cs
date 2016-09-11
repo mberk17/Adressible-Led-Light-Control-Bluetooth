@@ -24,16 +24,20 @@ namespace LedProject1._0
         public Graphics g;
         public Bitmap b;
         public Frame frame;
+        public IntPtr desk;
+        public IntPtr dc;
         public const int leftPixels = 7, rightPixels = 7, topPixels = 12;
         public const int numberOfPixels = leftPixels + rightPixels + topPixels;
         public const int bytesPerMessage = 42;
         public const int numberOfMessage = (numberOfPixels * 3 - 1) / bytesPerMessage + 1;
         public Boolean messageOnProgress = false;
-
+        public Boolean drawFrameColors = false;
+        public int continiousLedMode = 0;
         
         private void Form1_Load(object sender, EventArgs e)
         {
-            foreach(string s in SerialPort.GetPortNames())
+            
+            foreach (string s in SerialPort.GetPortNames())
                 comboBox1.Items.Add(s);
             frame = new Frame(numberOfPixels);
             pictureBox.BackColor = Color.FromArgb(255, 255, 255);
@@ -41,6 +45,7 @@ namespace LedProject1._0
             g = Graphics.FromImage(b);
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             drawScreen();
+
         }
         void refr()
         {
@@ -140,7 +145,7 @@ namespace LedProject1._0
                 continiousButton.Text = "Stop";
                 timer = new Timer();
                 timer.Tick += new EventHandler(timerTick);
-                timer.Interval = 1000;
+                timer.Interval = 100;
                 timer.Start();
             }
             else
@@ -311,13 +316,20 @@ namespace LedProject1._0
             WindowState = FormWindowState.Normal;
         }
 
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            continiousLedMode = comboBox2.SelectedIndex;
+            
+        }
+
         private Color getColorAt(Point pixel)
         {
-            IntPtr desk = GetDesktopWindow();
-            IntPtr dc = GetWindowDC(desk);
             int a = (int)GetPixel(dc, pixel.X, pixel.Y);
-            ReleaseDC(desk, dc);
-            return Color.FromArgb(255, (a >> 0) & 0xff, (a >> 8) & 0xff, (a >> 16) & 0xff);
+            return Color.FromArgb(255, (a >> 0) & 0xff, (a >> 8) & 0xff, (a >> 16) & 0xff); 
+            /*
+            Random rnd = new Random();
+            return Color.FromArgb(255, rnd.Next(0, 241*pixel.X) % 250, rnd.Next(0, 237 * pixel.Y) % 250, rnd.Next(0, 150));
+            */
         }
         private Boolean updateColorArrayFromScreen()
         {
@@ -326,6 +338,8 @@ namespace LedProject1._0
             int screenWidth = resolution.Width;
             Color tempColor;
             Point tempPoint;
+            desk = GetDesktopWindow();
+            dc = GetWindowDC(desk);
             for (int i = 1; i <= leftPixels; i++)
             {
                 tempPoint = new Point( screenWidth / 200, (leftPixels - i + 1) * (screenHeight / (leftPixels + 1)));
@@ -346,7 +360,9 @@ namespace LedProject1._0
                 tempColor = getColorAt(tempPoint);
                 frame.setPixel(tempColor, leftPixels + i - 1);
             }
-            drawScreen();
+            ReleaseDC(desk, dc);
+            if (drawFrameColors == true)
+                drawScreen();
             return true;
         }
         

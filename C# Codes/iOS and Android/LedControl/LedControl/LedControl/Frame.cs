@@ -1,5 +1,4 @@
 ﻿using System;
-
 namespace LedControl
 {
     public class Frame
