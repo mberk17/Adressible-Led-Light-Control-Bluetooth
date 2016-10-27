@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
 using System.Runtime.InteropServices;
-
-
+using System.Xml;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace LedProject1._0
 {
@@ -23,23 +24,40 @@ namespace LedProject1._0
         public SerialPort port1;
         public Graphics g;
         public Bitmap b;
+        public List<Frame> frames;
         public Frame frame;
         public IntPtr desk;
         public IntPtr dc;
+        public const String framePath = "./data.xml";
         public const int leftPixels = 7, rightPixels = 7, topPixels = 12;
         public const int numberOfPixels = leftPixels + rightPixels + topPixels;
         public const int bytesPerMessage = 42;
         public const int numberOfMessage = (numberOfPixels * 3 - 1) / bytesPerMessage + 1;
-        public Boolean messageOnProgress = false;
-        public Boolean drawFrameColors = false;
+        public bool messageOnProgress = false;
+        public bool drawFrameColors = false;
+        public bool isNewFrame = false;
         public int continiousLedMode = 0;
+
         
         private void Form1_Load(object sender, EventArgs e)
         {
             
             foreach (string s in SerialPort.GetPortNames())
                 comboBox1.Items.Add(s);
-            frame = new Frame(numberOfPixels);
+            if (File.Exists(framePath))
+            {
+                frames = XmlSerialization.ReadFromXmlFile<List<Frame>>(framePath);
+                foreach (var frame in frames)
+                    FrameBox.Items.Add(frame.frameName + "");
+            }
+            else
+            {
+                frames = new List<Frame>();
+                Frame temp = new Frame(numberOfPixels);
+                frames.Add(temp);
+            
+            }
+            frame = frames[0];
             pictureBox.BackColor = Color.FromArgb(255, 255, 255);
             b = new Bitmap(pictureBox.Width, pictureBox.Height);
             g = Graphics.FromImage(b);
@@ -81,7 +99,7 @@ namespace LedProject1._0
                 port1 = new SerialPort();
                 port1.BaudRate = 9600;
                 port1.PortName = comboBox1.GetItemText(comboBox1.SelectedItem);
-                port1.DataReceived += OnDataReceived;
+                port1.DataReceived += OnDataReceived; 
                 port1.Open();
                 ConnectButton.Text = "Terminate Connection";
             }
@@ -114,6 +132,26 @@ namespace LedProject1._0
                 port1.Write(final);
             }
         }
+
+
+        private void saveFrameButton_Click(object sender, EventArgs e)
+        {
+            //updateColorArrayFromScreen();
+            //Frame temp = new Frame();
+            if (File.Exists(framePath))
+                XmlSerialization.WriteToXmlFile<List<Frame>>(framePath, frames, true);
+            else
+            {
+                XmlSerialization.WriteToXmlFile<List<Frame>>(framePath, frames);
+            }
+            isNewFrame = false;
+        }
+        private void FrameBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            frame = frames[FrameBox.SelectedIndex];
+            drawScreen();
+        }
+
         private Boolean sendData()
         {
             if (!messageOnProgress)
@@ -235,6 +273,18 @@ namespace LedProject1._0
             Brush brush = new SolidBrush(temp);
             g.FillRectangle(brush, x - squareDimension / 2, y - squareDimension, squareDimension, squareDimension);
             updateScreen();
+            if (isNewFrame == false)
+            {
+                Frame temp1 = new Frame(numberOfPixels);
+                temp1.frameName = FrameBox.GetItemText(FrameBox.SelectedItem);
+                frames.Add(temp1);
+                frame = temp1;
+                isNewFrame = true;
+                FrameBox.DropDownStyle = ComboBoxStyle.DropDown;
+                FrameBox.Items.Add("NewFrame" + FrameBox.Items.Count.ToString());
+                FrameBox.SelectedIndex = FrameBox.Items.Count - 1;
+                
+            }
 
         }
 
@@ -295,10 +345,7 @@ namespace LedProject1._0
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int ReleaseDC(IntPtr window, IntPtr dc);
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            updateColorArrayFromScreen();
-        }
+        
 
         private void Form1_Resize(object sender, EventArgs e)
         {
@@ -321,6 +368,7 @@ namespace LedProject1._0
             continiousLedMode = comboBox2.SelectedIndex;
             
         }
+
 
         private Color getColorAt(Point pixel)
         {

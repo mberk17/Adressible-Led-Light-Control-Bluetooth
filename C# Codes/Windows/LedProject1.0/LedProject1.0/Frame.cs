@@ -12,7 +12,12 @@ namespace LedProject1._0
 {
     public class Frame
     {
-        private Color[] colorArray; 
+        public Color[] colorArray;
+        public String frameName;
+        public Frame()
+        {
+            
+        }
         public Frame(int numPixels)
         {
             colorArray = new Color[numPixels];
